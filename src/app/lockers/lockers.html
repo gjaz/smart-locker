@@ -1,0 +1,59 @@
+<h2>Lockers</h2>
+
+<p>Administración de lockers inteligentes.</p>
+
+<h3>Nuevo locker</h3>
+
+<form [formGroup]="lockerForm" (ngSubmit)="agregarLocker()">
+
+  <div>
+    <label>Código</label>
+    <input type="text" formControlName="codigo">
+  </div>
+
+  <div>
+    <label>Ubicación</label>
+    <input type="text" formControlName="ubicacion">
+  </div>
+
+  <div>
+    <label>Estado</label>
+    <select formControlName="estado">
+      <option value="Disponible">Disponible</option>
+      <option value="Ocupado">Ocupado</option>
+    </select>
+  </div>
+
+  <div>
+    <label>Tamaño</label>
+    <select formControlName="tamano">
+      <option value="Pequeño">Pequeño</option>
+      <option value="Mediano">Mediano</option>
+      <option value="Grande">Grande</option>
+    </select>
+  </div>
+
+  <button type="submit">
+    Agregar locker
+  </button>
+
+</form>
+
+<hr>
+
+<h3>Lockers registrados</h3>
+
+<ul>
+  @for (locker of lockers; track locker.id) {
+    <li>
+      <strong>{{ locker.codigo }}</strong>
+      - {{ locker.ubicacion }}
+      - {{ locker.estado }}
+      - {{ locker.tamano }}
+
+      <button (click)="eliminarLocker(locker.id)">
+        Eliminar
+      </button>
+    </li>
+  }
+</ul>
