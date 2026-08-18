@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { ReactiveFormsModule, FormControl, FormGroup } from '@angular/forms';
 import { Locker } from './locker';
+import { LockersData } from './services/lockers-data';
 
 @Component({
   selector: 'app-lockers',
@@ -10,29 +11,11 @@ import { Locker } from './locker';
 })
 export class Lockers 
 {
-  lockers: Locker[] = [
-    {
-      id: 1,
-      codigo: 'L-001',
-      ubicacion: 'Planta 1',
-      estado: 'Disponible',
-      tamano: 'Mediano'
-    },
-    {
-      id: 2,
-      codigo: 'L-002',
-      ubicacion: 'Planta 1',
-      estado: 'Ocupado',
-      tamano: 'Grande'
-    },
-    {
-      id: 3,
-      codigo: 'L-003',
-      ubicacion: 'Planta 2',
-      estado: 'Disponible',
-      tamano: 'Pequeño'
-    }
-  ];
+  constructor(private lockersData: LockersData) 
+  {
+    this.lockers = this.lockersData.obtenerLockers();
+  }
+  lockers: Locker[] = [];
 
   lockerForm = new FormGroup({
     codigo: new FormControl(''),
@@ -41,9 +24,10 @@ export class Lockers
     tamano: new FormControl('Mediano')
   });
 
-  eliminarLocker(id: number) 
+  eliminarLocker(id: number)
   {
-    this.lockers = this.lockers.filter(locker => locker.id !== id);
+       this.lockersData.eliminarLocker(id);
+       this.lockers = this.lockersData.obtenerLockers();
   }
 
   agregarLocker() 
@@ -57,7 +41,8 @@ export class Lockers
       tamano: this.lockerForm.value.tamano ?? 'Mediano'
     };
 
-    this.lockers.push(nuevoLocker);
+    this.lockersData.agregarLocker(nuevoLocker);
+    this.lockers = this.lockersData.obtenerLockers();
 
     this.lockerForm.reset({
       codigo: '',
