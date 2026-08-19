@@ -1,5 +1,10 @@
 import { Component } from '@angular/core';
-import { ReactiveFormsModule, FormControl, FormGroup } from '@angular/forms';
+import {
+  ReactiveFormsModule,
+  FormControl,
+  FormGroup,
+  Validators
+} from '@angular/forms';
 import { Locker } from './locker';
 import { LockersData } from './services/lockers-data';
 
@@ -18,11 +23,19 @@ export class Lockers
   lockers: Locker[] = [];
 
   lockerForm = new FormGroup({
-    codigo: new FormControl(''),
-    ubicacion: new FormControl(''),
-    estado: new FormControl('Disponible'),
-    tamano: new FormControl('Mediano')
-  });
+  codigo: new FormControl('', [
+    Validators.required,
+    Validators.minLength(3)
+  ]),
+
+  ubicacion: new FormControl('', [
+    Validators.required
+  ]),
+
+  estado: new FormControl('Disponible'),
+
+  tamano: new FormControl('Mediano')
+});
 
   eliminarLocker(id: number)
   {
@@ -32,6 +45,10 @@ export class Lockers
 
   agregarLocker() 
   {
+    if (this.lockerForm.invalid) 
+    {
+      return;
+    }
 
     const nuevoLocker: Locker = {
       id: this.lockers.length + 1,

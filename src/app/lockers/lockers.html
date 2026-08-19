@@ -33,7 +33,9 @@
     </select>
   </div>
 
-  <button type="submit">
+  <button
+    type="submit"
+    [disabled]="lockerForm.invalid">
     Agregar locker
   </button>
 
