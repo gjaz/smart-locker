@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import {
   ReactiveFormsModule,
   FormControl,
@@ -6,7 +6,9 @@ import {
   Validators
 } from '@angular/forms';
 import { Locker } from './locker';
-import { LockersData } from './services/lockers-data';
+import { LockerApi } from '../services/locker-api';
+
+
 
 @Component({
   selector: 'app-lockers',
@@ -14,13 +16,30 @@ import { LockersData } from './services/lockers-data';
   templateUrl: './lockers.html',
   styleUrl: './lockers.css',
 })
-export class Lockers 
+export class Lockers implements OnInit
 {
-  constructor(private lockersData: LockersData) 
+  constructor(
+  private lockerApi: LockerApi
+) {}
+
+  lockers = signal<Locker[]>([]);
+
+  ngOnInit(): void 
   {
-    this.lockers = this.lockersData.obtenerLockers();
+    this.lockerApi.getLockers().subscribe({
+      next: (lockers) => {
+        console.log('Lockers recibidos desde API:', lockers);
+        this.lockers.set(lockers);
+        console.log('this.lockers después de asignar:', this.lockers().length);
+        
+      },
+      error: (error) => {
+        console.error('Error al obtener lockers desde API:', error);
+      }
+    });
   }
-  lockers: Locker[] = [];
+
+
 
   lockerForm = new FormGroup({
   codigo: new FormControl('', [
@@ -39,8 +58,18 @@ export class Lockers
 
   eliminarLocker(id: number)
   {
-       this.lockersData.eliminarLocker(id);
-       this.lockers = this.lockersData.obtenerLockers();
+    this.lockerApi.deleteLocker(id).subscribe({
+      next: () => {
+        console.log('Locker eliminado desde API:', id);
+
+        this.lockers.update(lockers =>
+          lockers.filter(locker => locker.id !== id)
+        );
+      },
+      error: (error) => {
+        console.error('Error al eliminar locker desde API:', error);
+      }
+    });
   }
 
   agregarLocker() 
@@ -51,21 +80,29 @@ export class Lockers
     }
 
     const nuevoLocker: Locker = {
-      id: this.lockers.length + 1,
+      id: 0,
       codigo: this.lockerForm.value.codigo ?? '',
       ubicacion: this.lockerForm.value.ubicacion ?? '',
       estado: this.lockerForm.value.estado ?? 'Disponible',
       tamano: this.lockerForm.value.tamano ?? 'Mediano'
     };
 
-    this.lockersData.agregarLocker(nuevoLocker);
-    this.lockers = this.lockersData.obtenerLockers();
+    this.lockerApi.addLocker(nuevoLocker).subscribe({
+      next: (lockerCreado) => {
+        console.log('Locker creado desde API:', lockerCreado);
 
-    this.lockerForm.reset({
-      codigo: '',
-      ubicacion: '',
-      estado: 'Disponible',
-      tamano: 'Mediano'
+        this.lockers.update(lockers => [...lockers, lockerCreado]);
+
+        this.lockerForm.reset({
+          codigo: '',
+          ubicacion: '',
+          estado: 'Disponible',
+          tamano: 'Mediano'
+        });
+      },
+      error: (error) => {
+        console.error('Error al crear locker:', error);
+      }
     });
   }
 }

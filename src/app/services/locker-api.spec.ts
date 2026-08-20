@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { LockersData } from './lockers-data';
+import { LockerApi } from './locker-api';
 
-describe('LockersData', () => {
-  let service: LockersData;
+describe('LockerApi', () => {
+  let service: LockerApi;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(LockersData);
+    service = TestBed.inject(LockerApi);
   });
 
   it('should be created', () => {

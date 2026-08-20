@@ -43,10 +43,12 @@
 
 <hr>
 
+<p>Cantidad de lockers: {{ lockers().length }}</p>
+
 <h3>Lockers registrados</h3>
 
 <ul>
-  @for (locker of lockers; track locker.id) {
+  @for (locker of lockers(); track locker.id) {
     <li>
       <strong>{{ locker.codigo }}</strong>
       - {{ locker.ubicacion }}
