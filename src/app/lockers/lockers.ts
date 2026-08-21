@@ -24,6 +24,8 @@ export class Lockers implements OnInit
 
   lockers = signal<Locker[]>([]);
 
+  editandoLocker = signal<Locker | null>(null);
+
   ngOnInit(): void 
   {
     this.lockerApi.getLockers().subscribe({
@@ -39,7 +41,72 @@ export class Lockers implements OnInit
     });
   }
 
+  editarLocker(locker: Locker): void 
+  {
+    this.editandoLocker.set(locker);
 
+    this.lockerForm.patchValue({
+      codigo: locker.codigo,
+      ubicacion: locker.ubicacion,
+      estado: locker.estado,
+      tamano: locker.tamano
+    });
+  }
+
+  cancelarEdicion(): void 
+  {
+    this.editandoLocker.set(null);
+
+    this.lockerForm.reset({
+      codigo: '',
+      ubicacion: '',
+      estado: 'Disponible',
+      tamano: 'Mediano'
+    });
+  }
+
+  actualizarLocker(): void 
+  {
+    if (this.lockerForm.invalid) {
+      return;
+    }
+
+    const lockerActual = this.editandoLocker();
+
+    if (!lockerActual) {
+      return;
+    }
+
+    const lockerActualizado: Locker = {
+      id: lockerActual.id,
+      codigo: this.lockerForm.value.codigo ?? '',
+      ubicacion: this.lockerForm.value.ubicacion ?? '',
+      estado: this.lockerForm.value.estado ?? 'Disponible',
+      tamano: this.lockerForm.value.tamano ?? 'Mediano'
+    };
+
+    this.lockerApi.updateLocker(
+      lockerActual.id,
+      lockerActualizado
+    ).subscribe({
+      next: (lockerActualizado) => {
+        console.log('Locker actualizado desde API:', lockerActualizado);
+
+        this.lockers.update(lockers =>
+          lockers.map(locker =>
+            locker.id === lockerActualizado.id
+              ? lockerActualizado
+              : locker
+          )
+        );
+
+        this.cancelarEdicion();
+      },
+      error: (error) => {
+        console.error('Error al actualizar locker:', error);
+      }
+    });
+  }
 
   lockerForm = new FormGroup({
   codigo: new FormControl('', [

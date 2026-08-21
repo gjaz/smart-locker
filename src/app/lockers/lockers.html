@@ -2,9 +2,13 @@
 
 <p>Administración de lockers inteligentes.</p>
 
-<h3>Nuevo locker</h3>
+<h3>
+  {{ editandoLocker() ? 'Editar locker' : 'Nuevo locker' }}
+</h3>
 
-<form [formGroup]="lockerForm" (ngSubmit)="agregarLocker()">
+<form
+  [formGroup]="lockerForm"
+  (ngSubmit)="editandoLocker() ? actualizarLocker() : agregarLocker()">
 
   <div>
     <label>Código</label>
@@ -36,8 +40,17 @@
   <button
     type="submit"
     [disabled]="lockerForm.invalid">
-    Agregar locker
+    {{ editandoLocker() ? 'Actualizar locker' : 'Agregar locker' }}
   </button>
+
+  @if (editandoLocker()) 
+  {
+    <button
+      type="button"
+      (click)="cancelarEdicion()">
+      Cancelar
+    </button>
+  }
 
 </form>
 
@@ -54,6 +67,10 @@
       - {{ locker.ubicacion }}
       - {{ locker.estado }}
       - {{ locker.tamano }}
+
+      <button (click)="editarLocker(locker)">
+        Editar
+      </button>
 
       <button (click)="eliminarLocker(locker.id)">
         Eliminar

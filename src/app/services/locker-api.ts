@@ -23,4 +23,8 @@ export class LockerApi {
   deleteLocker(id: number): Observable<void> {
   return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
+
+  updateLocker(id: number, locker: Locker): Observable<Locker> {
+  return this.http.put<Locker>(`${this.apiUrl}/${id}`, locker);
+  }
 }
