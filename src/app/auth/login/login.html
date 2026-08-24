@@ -1,0 +1,31 @@
+<h2>Iniciar sesión</h2>
+
+<form
+  [formGroup]="loginForm"
+  (ngSubmit)="iniciarSesion()">
+
+  <div>
+    <label>Usuario</label>
+    <input
+      type="text"
+      formControlName="username">
+  </div>
+
+  <div>
+    <label>Contraseña</label>
+    <input
+      type="password"
+      formControlName="password">
+  </div>
+
+  <button
+    type="submit"
+    [disabled]="loginForm.invalid">
+    Iniciar sesión
+  </button>
+
+</form>
+
+@if (mensaje()) {
+  <p>{{ mensaje() }}</p>
+}

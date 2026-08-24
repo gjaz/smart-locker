@@ -2,59 +2,65 @@
 
 <p>Administración de lockers inteligentes.</p>
 
-<h3>
-  {{ editandoLocker() ? 'Editar locker' : 'Nuevo locker' }}
-</h3>
+@if (authService.isAdmin()) {
 
-<form
-  [formGroup]="lockerForm"
-  (ngSubmit)="editandoLocker() ? actualizarLocker() : agregarLocker()">
+  <h3>
+    {{ editandoLocker() ? 'Editar locker' : 'Nuevo locker' }}
+  </h3>
 
-  <div>
-    <label>Código</label>
-    <input type="text" formControlName="codigo">
-  </div>
+  <form
+    [formGroup]="lockerForm"
+    (ngSubmit)="editandoLocker() ? actualizarLocker() : agregarLocker()">
 
-  <div>
-    <label>Ubicación</label>
-    <input type="text" formControlName="ubicacion">
-  </div>
+    <div>
+      <label>Código</label>
+      <input
+        type="text"
+        formControlName="codigo">
+    </div>
 
-  <div>
-    <label>Estado</label>
-    <select formControlName="estado">
-      <option value="Disponible">Disponible</option>
-      <option value="Ocupado">Ocupado</option>
-    </select>
-  </div>
+    <div>
+      <label>Ubicación</label>
+      <input
+        type="text"
+        formControlName="ubicacion">
+    </div>
 
-  <div>
-    <label>Tamaño</label>
-    <select formControlName="tamano">
-      <option value="Pequeño">Pequeño</option>
-      <option value="Mediano">Mediano</option>
-      <option value="Grande">Grande</option>
-    </select>
-  </div>
+    <div>
+      <label>Estado</label>
+      <select formControlName="estado">
+        <option value="Disponible">Disponible</option>
+        <option value="Ocupado">Ocupado</option>
+      </select>
+    </div>
 
-  <button
-    type="submit"
-    [disabled]="lockerForm.invalid">
-    {{ editandoLocker() ? 'Actualizar locker' : 'Agregar locker' }}
-  </button>
+    <div>
+      <label>Tamaño</label>
+      <select formControlName="tamano">
+        <option value="Pequeño">Pequeño</option>
+        <option value="Mediano">Mediano</option>
+        <option value="Grande">Grande</option>
+      </select>
+    </div>
 
-  @if (editandoLocker()) 
-  {
     <button
-      type="button"
-      (click)="cancelarEdicion()">
-      Cancelar
+      type="submit"
+      [disabled]="lockerForm.invalid">
+      {{ editandoLocker() ? 'Actualizar locker' : 'Agregar locker' }}
     </button>
-  }
 
-</form>
+    @if (editandoLocker()) {
+      <button
+        type="button"
+        (click)="cancelarEdicion()">
+        Cancelar
+      </button>
+    }
 
-<hr>
+  </form>
+
+  <hr>
+}
 
 <p>Cantidad de lockers: {{ lockers().length }}</p>
 
@@ -62,19 +68,27 @@
 
 <ul>
   @for (locker of lockers(); track locker.id) {
+
     <li>
+
       <strong>{{ locker.codigo }}</strong>
       - {{ locker.ubicacion }}
       - {{ locker.estado }}
       - {{ locker.tamano }}
 
-      <button (click)="editarLocker(locker)">
-        Editar
-      </button>
+      @if (authService.isAdmin()) {
 
-      <button (click)="eliminarLocker(locker.id)">
-        Eliminar
-      </button>
+        <button (click)="editarLocker(locker)">
+          Editar
+        </button>
+
+        <button (click)="eliminarLocker(locker.id)">
+          Eliminar
+        </button>
+
+      }
+
     </li>
+
   }
 </ul>

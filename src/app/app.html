@@ -1,8 +1,31 @@
 <h1>{{ titulo }}</h1>
 
 <nav>
-  <a routerLink="/dashboard">Dashboard </a>
-  <a routerLink="/lockers"> Lockers</a>
+
+  @if (estaAutenticado()) {
+
+    <a routerLink="/dashboard">
+      Dashboard
+    </a>
+
+    <a routerLink="/lockers">
+      Lockers
+    </a>
+
+    <button
+      type="button"
+      (click)="cerrarSesion()">
+      Cerrar sesión
+    </button>
+
+  } @else {
+
+    <a routerLink="/login">
+      Login
+    </a>
+
+  }
+
 </nav>
 
 <router-outlet></router-outlet>

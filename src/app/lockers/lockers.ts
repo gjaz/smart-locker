@@ -7,7 +7,7 @@ import {
 } from '@angular/forms';
 import { Locker } from './locker';
 import { LockerApi } from '../services/locker-api';
-
+import { AuthService } from '../services/auth-service';
 
 
 @Component({
@@ -19,7 +19,8 @@ import { LockerApi } from '../services/locker-api';
 export class Lockers implements OnInit
 {
   constructor(
-  private lockerApi: LockerApi
+  private lockerApi: LockerApi,
+  public authService: AuthService
 ) {}
 
   lockers = signal<Locker[]>([]);
