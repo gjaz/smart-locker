@@ -2,13 +2,14 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Locker } from '../lockers/locker';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class LockerApi {
 
-  private apiUrl = 'https://localhost:7177/api/lockers';
+  private apiUrl = `${environment.apiUrl}/lockers`;
 
   constructor(private http: HttpClient) {}
 

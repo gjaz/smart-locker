@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-
+import { environment } from '../../environments/environment';
 import { LoginRequest } from '../auth/login-request';
 import { LoginResponse } from '../auth/login-response';
 
@@ -10,7 +10,7 @@ import { LoginResponse } from '../auth/login-response';
 })
 export class AuthService {
 
-  private apiUrl = 'https://localhost:7177/api/auth';
+  private apiUrl = `${environment.apiUrl}/auth`;
   private tokenKey = 'smartlocker_token';
 
   constructor(private http: HttpClient) {}
